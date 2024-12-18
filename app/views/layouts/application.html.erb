@@ -10,7 +10,14 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body data-turbo-prefetch="false">
     <%= yield %>
+
+    <hr>
+    <%- if current_user %>
+      <p><%= button_to "Logout", destroy_user_session_path, method: :delete  %></p>
+    <% else %>
+      <p><%= link_to "Reset params", root_path %></p>
+    <% end %>
   </body>
 </html>

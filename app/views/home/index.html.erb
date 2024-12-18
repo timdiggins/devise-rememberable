@@ -1,2 +1,46 @@
-<h1>Home#index</h1>
-<p>Find me in app/views/home/index.html.erb</p>
+<h1>Testing devise with rememberable and timeoutable</h1>
+
+<%- time_now = Time.now %>
+<%- time_initial = params[:time_initial] ? Time.parse(params[:time_initial]) : time_now %>
+<table>
+  <tr>
+    <th>Time first request</th>
+    <td> <%= time_initial.to_fs(:db) %></td>
+  </tr>
+  <tr>
+    <th>Time previous request</th>
+    <td><%= time_now.to_fs(:db) %></td>
+  </tr>
+
+  <%- if params[:time_was] %>
+    <tr>
+      <%- time_was = Time.parse(params[:time_was]) %>
+      <th>Time was</th>
+      <td><%= params[:time_was] %></td>
+    </tr>
+    <tr>
+      <th>Diff (since previous request):</th>
+      <td><%= time_now - time_was %></td>
+    </tr>
+  <%- end %>
+  <tr>
+    <th>Total (since first request):</th>
+    <td><%= time_now - time_initial %></td>
+  </tr>
+
+  <tr>
+    <th>So far this request:</th>
+    <td id="js-timer">???</td>
+  </tr>
+</table>
+
+<p><%= link_to "Refresh page", {time_was: time_now.to_fs(:db), time_initial: time_initial.to_fs(:db)} %>  (with updated timers)</p>
+
+<script>
+  var startTime = Date.now();
+
+  var interval = setInterval(function () {
+    var elapsedTime = Date.now() - startTime;
+    document.getElementById("js-timer").innerHTML = (elapsedTime / 1000).toFixed(3);
+  }, 100);
+</script>
